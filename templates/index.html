@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Water Requirement Prediction</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0fff0; /* Very light green */
+        }
+        .container {
+            border: 1px solid #28a745; /* Green border */
+            padding: 20px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 10px;
+        }
+        /* Add these styles */
+        #weather_info {
+        background-color: #f8f9fa; /* Light grey background */
+        border: 2px solid #000000; /* Dark black border */
+        padding: 15px; /* Padding for spacing inside the box */
+        border-radius: 5px; /* Optional: Rounded corners */
+        }
+        h1 {
+            color: #28a745; /* Bold green heading */
+            text-align: center;
+            font-weight: bold;
+        }
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            height: 100%; /* Ensure both sides are the same height */
+        }
+        .left-input {
+            width: 53%;
+            border-right: 2px solid #28a745;
+            padding-right: 20px;
+        }
+        .right-image {
+            width: 45%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200%; /* Ensure full height */
+            margin-top: 50px;
+        }
+        .right-image img {
+            width: 100%;
+            height: 100%; /* Match the height of the left container */
+            object-fit: contain; /* Ensure the image scales well */
+        }
+        .form-control {
+            border-color: #28a745; /* Green border */
+            background-color: #f0fff0; /* Light green shading */
+        }
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Irrigation Water Requirement Prediction</h1>
+    <form action="/predict" method="POST">
+        <div class="input-container">
+            <div class="left-input">
+                <!-- Crop Type Input -->
+                <div class="form-group">
+                    <label for="crop_type">Crop Type</label>
+                    <select class="form-control" id="crop_type" name="crop_type" required>
+                        <option value="BANANA">Banana</option>
+                        <option value="BEAN">BEAN</option>
+                        <option value="CABBAGE">CABBAGE</option>
+                        <option value="CITRUS">CITRUS</option>
+                        <option value="COTTON">COTTON</option>
+                        <option value="MAIZE">MAIZE</option>
+                        <option value="MELON">MELON</option>
+                        <option value="MUSTARD">MUSTARD</option>
+                        <option value="ONION">ONION</option>
+                        <option value="OTHER">OTHER</option>
+                        <option value="POTATO">POTATO</option>
+                        <option value="RICE">RICE</option>
+                        <option value="SOYABEAN">SOYABEAN</option>
+                        <option value="SUGARCANE">SUGARCANE</option>
+                        <option value="TOMATO">TOMATO</option>
+                        <option value="WHEAT">WHEAT</option>
+                        <!-- Add other options as needed -->
+                    </select>
+                </div>
+
+                <!-- Soil Type Input -->
+                <div class="form-group">
+                    <label for="soil_type">Soil Type</label>
+                    <select class="form-control" id="soil_type" name="soil_type" required>
+                        <option value="DRY">Dry</option>
+                        <option value="HUMID">Humid</option>
+                        <option value="WET">Wet</option>
+                    </select>
+                </div>
+
+                <!-- City Input and Fetch Weather Button -->
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" name="city" placeholder="Enter city for weather" required>
+                </div>
+                <button type="button" class="btn btn-green" onclick="fetchWeather()">Fetch Weather Data</button>
+                <!-- Weather Info will be inserted below when fetched -->
+                <div id="weather_info" class="mt-3" style="display: none;">
+                   <p><strong>Weather Info:</strong></p>
+                   <div id="weather_data"></div>
+                </div>
+                <!-- Motor Capacity Input -->
+                <div class="form-group mt-3">
+                    <label for="motor_capacity">Motor Capacity (liters/sec)</label>
+                    <input type="text" class="form-control" id="motor_capacity" name="motor_capacity" required>
+                </div>
+
+                <!-- Predict Button -->
+                <button type="submit" class="btn btn-green">Predict Water Requirement</button>
+            </div>
+
+            <div class="right-image">
+                <img src="/static/images/img.png" alt="Decorative Image">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function fetchWeather() {
+        const city = document.getElementById('city').value;
+        if (city) {
+            fetch(`/fetch_weather?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('weather_data').innerHTML = `
+                            Weather: ${data.description}<br>
+                            Temperature: ${data.temperature}°C<br>
+                            Humidity: ${data.humidity}%<br>
+                            Pressure: ${data.pressure} hPa
+                        `;
+                        document.getElementById('weather_info').style.display = 'block'; // Show the weather info box
+                    } else {
+                        document.getElementById('weather_data').innerHTML = 'Weather data not available';
+                        document.getElementById('weather_info').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching weather:', error);
+                    document.getElementById('weather_data').innerHTML = 'Error fetching weather data';
+                    document.getElementById('weather_info').style.display = 'block';
+                });
+        }
+    }
+</script>
+
+
+</body>
+</html>

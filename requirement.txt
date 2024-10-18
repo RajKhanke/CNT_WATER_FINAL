@@ -1,0 +1,8 @@
+pandas
+numpy
+matplotlib
+joblib==1.4.2
+plotly
+scikit-learn==1.5.2
+flask
+requests
