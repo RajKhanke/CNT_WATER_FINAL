@@ -133,7 +133,7 @@ def predict():
         time_gauge = go.Figure(go.Indicator(
             mode="gauge+number",
             value=estimated_time_duration,
-            title={"text": "Estimated Time (minutes)"},
+            title={"text": "Estimated Time (Seconds)"},
             gauge={
                 "axis": {"range": [None, 120]},
                 "bar": {"color": "blue"},
